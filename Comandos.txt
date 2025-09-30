@@ -1,0 +1,12 @@
+1
+.\.venv\Scripts\activate
+2
+uvicorn app:app --host 0.0.0.0 --port 8080
+
+3 em outro prompt rodar o teste: 
+curl http://localhost:8080/health
+
+4 outro teste com valores de parâmetros: 
+  curl -X POST http://localhost:8080/predict ^
+  -H "Content-Type: application/json" ^
+  -d "{\"features\":{\"f1\":0.21,\"f2\":0.14,\"f3\":9.7,\"f4\":11.0,\"f5\":-0.12}}"

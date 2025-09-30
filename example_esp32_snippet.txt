@@ -1,0 +1,38 @@
+
+// Example snippet: send features as JSON to your endpoint
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* WIFI_SSID = "SEU_SSID";
+const char* WIFI_PASS = "SUA_SENHA";
+const char* ENDPOINT  = "https://SEU_ENDPOINT/predict";
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  while (WiFi.status()!=WL_CONNECTED) { delay(500); Serial.print("."); }
+  Serial.println("\nWiFi ok");
+}
+
+void loop() {
+  float f1=0.21, f2=0.14, f3=9.7, f4=11.0, f5=-0.12; // substitua pelos valores reais
+
+  if (WiFi.status()==WL_CONNECTED) {
+    HTTPClient http;
+    http.begin(ENDPOINT); // use HTTPS
+    http.addHeader("Content-Type", "application/json");
+    String body = String("{\"features\":{")
+      + "\"f1\":" + String(f1, 6) + ","
+      + "\"f2\":" + String(f2, 6) + ","
+      + "\"f3\":" + String(f3, 6) + ","
+      + "\"f4\":" + String(f4, 6) + ","
+      + "\"f5\":" + String(f5, 6) + "},"
+      + "\"metadata\":{\"device_id\":\"esp32-001\"}}";
+    int code = http.POST(body);
+    String resp = http.getString();
+    http.end();
+    Serial.printf("HTTP %d\n", code);
+    Serial.println(resp);
+  }
+  delay(10000);
+}
